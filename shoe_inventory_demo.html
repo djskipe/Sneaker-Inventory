@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoe Inventory</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f7f7f7; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 24px; }
+        h1 { text-align: center; }
+        #filters { margin-bottom: 16px; }
+        #filters label { margin-right: 8px; }
+        #brand-filter { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        #search-input { width: 100%; margin-bottom: 16px; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+        .shoe-list { list-style: none; padding: 0; }
+        .shoe-item { display: flex; align-items: center; gap: 16px; background: #fafafa; margin-bottom: 12px; border-radius: 6px; padding: 10px; box-shadow: 0 1px 3px #0001; flex-direction: column; justify-content: space-between; }
+        .shoe-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #fff;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        /* Improve brand logo display */
+        .brand-logo {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 1px 4px #0002;
+            padding: 6px;
+            max-width: 56px;
+            max-height: 56px;
+            min-width: 0;
+            min-height: 0;
+            box-sizing: border-box;
+        }
+        .shoe-info { flex: 1; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display:block;margin:0 auto 16px auto;width:120px;height:120px;background:#4CAF50;border-radius:50%;box-shadow:0 2px 8px #0002;display:flex;align-items:center;justify-content:center;color:white;font-size:24px;font-weight:bold;">👟</div>
+        <h1>Shoe Inventory</h1>
+        <div style="display:flex;justify-content:center;gap:64px;margin-bottom:10px;flex-wrap:wrap;">
+  <div id="size-legend" style="text-align:left;font-size:1em;color:#444;line-height:1.7;min-width:180px;">
+    <strong>Size Legend:</strong><br>
+    SkyStep: 46 (US 12)<br>
+    UrbanMax: 46 (US 12)<br>
+    FlexFit: 46.5 (US 12)<br>
+    StreetStyle: 46 (US 12)<br>
+    TrailRun: 46.5 (US 12)<br>
+    SportMax: 46 2/3 (US 12)
+  </div>
+  <div id="lace-legend" style="text-align:left;font-size:1em;color:#444;line-height:1.7;min-width:220px;">
+    <strong>Lace Legend (length):</strong><br>
+    High Top Classic: 160cm<br>
+    Retro Runner: 120cm<br>
+    Basketball Pro: 160cm<br>
+    Classic Court: 120cm<br>
+    Street High: 120cm<br>
+    Urban High: 160cm<br>
+    Low Profile: 160cm
+  </div>
+</div>
+        <div id="shoe-counter" style="text-align:center;font-size:1.2em;color:#333;font-weight:bold;margin-bottom:18px;"></div>
+        <div id="filters"></div>
+        <input type="text" id="search-input" placeholder="Search shoe..." style="width:100%;margin-bottom:16px;padding:8px;border-radius:4px;border:1px solid #ccc;">
+        <ul class="shoe-list" id="shoe-list"></ul>
+    </div>
+    <script>
+        // Shoe array - easily editable
+        let shoes = [
+  { brand: "SkyStep", name: "Delta Force Vulcanized", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Delta" },
+  { brand: "SkyStep", name: "Charge Suede Classic", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Charge" },
+  { brand: "SkyStep", name: "Court Vintage Premium", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Court" },
+  { brand: "SkyStep", name: "Craft General Purpose Light Cream", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Craft" },
+  { brand: "SkyStep", name: "Squash-Type Summit White", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Squash" },
+  { brand: "SkyStep", name: "Air Force Low Urban Edition", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Air" },
+  { brand: "SkyStep", name: "Air Force Low Supreme White", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Supreme" },
+  { brand: "SkyStep", name: "Blazer Mid 77 Vintage Black", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Blazer" },
+  { brand: "SkyStep", name: "Air Force Mid Street Edition", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Street" },
+  { brand: "SkyStep", name: "Air Force Mid Urban Black", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Urban" },
+  { brand: "SkyStep", name: "Air Force Mid Pink Edition", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Pink" },
+  { brand: "SkyStep", name: "Air Force Mid Chocolate Brown", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Choco" },
+  { brand: "SkyStep", name: "Air Flight Legacy Blue", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Flight" },
+  { brand: "UrbanMax", name: "1 Retro High Heritage", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+1" },
+  { brand: "UrbanMax", name: "1 Retro High '85 Classic", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+85" },
+  { brand: "UrbanMax", name: "1 Retro High OG Found", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Found" },
+  { brand: "UrbanMax", name: "1 Retro Dark Mocha", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Mocha" },
+  { brand: "UrbanMax", name: "1 Retro High OG Summer Collection", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Summer" },
+  { brand: "UrbanMax", name: "1 Retro High OG Black Gold", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Gold" },
+  { brand: "UrbanMax", name: "1 Retro High OG Premium", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Premium" },
+  { brand: "UrbanMax", name: "1 Mid Gym Red Black White", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Gym" },
+  { brand: "UrbanMax", name: "3 Retro Fear Edition", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Fear" },
+  { brand: "UrbanMax", name: "3 Fragment White", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Fragment" },
+  { brand: "UrbanMax", name: "3 Retro White Cement", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Cement" },
+  { brand: "UrbanMax", name: "3 Premium Black Pewter", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Pewter" },
+  { brand: "UrbanMax", name: "3 Retro Premium Collection", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Collection" },
+  { brand: "UrbanMax", name: "3 Retro Wizard", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Wizard" },
+  { brand: "UrbanMax", name: "3 Black Cement 2024", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Black" },
+  { brand: "UrbanMax", name: "3 Retro Fire Red", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Fire" },
+  { brand: "UrbanMax", name: "4 Retro Pine Green", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Pine" },
+  { brand: "UrbanMax", name: "4 Military Blue", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Military" },
+  { brand: "UrbanMax", name: "4 Retro Premium Violet", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Violet" },
+  { brand: "UrbanMax", name: "4 Retro Military Black", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+MilBlack" },
+  { brand: "UrbanMax", name: "4 Midnight Navy", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Navy" },
+  { brand: "UrbanMax", name: "6 Retro University White", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Uni" },
+  { brand: "UrbanMax", name: "6 Retro Classic", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Classic" },
+  { brand: "UrbanMax", name: "6 Street British Khaki", image: "https://via.placeholder.com/120x120/FF9800/FFFFFF?text=UrbanMax+Khaki" },
+  { brand: "SkyStep", name: "Dunk Low Chicago Pack", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Chicago" },
+  { brand: "SkyStep", name: "Dunk Low NYC Edition", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+NYC" },
+  { brand: "SkyStep", name: "Dunk Low Championship Red", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+ChampRed" },
+  { brand: "SkyStep", name: "Dunk Low Reverse Panda", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Panda" },
+  { brand: "SkyStep", name: "Dunk Low Championship Purple", image: "https://via.placeholder.com/120x120/4CAF50/FFFFFF?text=SkyStep+Purple" },
+  { brand: "FlexFit", name: "550 White Red", image: "https://via.placeholder.com/120x120/2196F3/FFFFFF?text=FlexFit+550" },
+  { brand: "FlexFit", name: "550 White Nightwatch Green", image: "https://via.placeholder.com/120x120/2196F3/FFFFFF?text=FlexFit+Night" },
+  { brand: "FlexFit", name: "CT300 Classic", image: "https://via.placeholder.com/120x120/2196F3/FFFFFF?text=FlexFit+CT300" },
+  { brand: "TrailRun", name: "XT-6 Lunar Rock", image: "https://via.placeholder.com/120x120/795548/FFFFFF?text=TrailRun+XT6" },
+  { brand: "StreetStyle", name: "Out Of Office Low White Navy", image: "https://via.placeholder.com/120x120/9C27B0/FFFFFF?text=StreetStyle+OOO" },
+  { brand: "ClassicWear", name: "Chuck 70 Street Edition", image: "https://via.placeholder.com/120x120/607D8B/FFFFFF?text=ClassicWear+70" },
+  { brand: "SportMax", name: "Boost 350 Pirate Black", image: "https://via.placeholder.com/120x120/F44336/FFFFFF?text=SportMax+350" },
+  { brand: "SportMax", name: "Boost 700 Wave Runner", image: "https://via.placeholder.com/120x120/F44336/FFFFFF?text=SportMax+700" }
+];
+
+        // FILTERS
+        function renderBrandFilter() {
+            const brands = Array.from(new Set(shoes.map(s => s.brand))).sort();
+            const filterDiv = document.getElementById('filters');
+            filterDiv.innerHTML = '<label for="brand-filter">Filter by brand:</label>';
+            const select = document.createElement('select');
+            select.id = 'brand-filter';
+            select.innerHTML = '<option value="">All</option>' + brands.map(b => `<option value="${b}">${b}</option>`).join('');
+            select.onchange = renderShoes;
+            filterDiv.appendChild(select);
+        }
+
+        // Function to update shoe counter
+        function updateShoeCounter(count) {
+            const counter = document.getElementById('shoe-counter');
+            counter.textContent = `Total shoes: ${count}`;
+        }
+
+        // Function to render the list
+        function renderShoes() {
+            const list = document.getElementById('shoe-list');
+            list.innerHTML = '';
+            const brandFilter = document.getElementById('brand-filter')?.value || '';
+            const search = document.getElementById('search-input')?.value.toLowerCase() || '';
+            let filtered = shoes;
+            if (brandFilter) {
+                filtered = filtered.filter(shoe => shoe.brand === brandFilter);
+            }
+            if (search) {
+                filtered = filtered.filter(shoe =>
+                    shoe.name.toLowerCase().includes(search) ||
+                    shoe.brand.toLowerCase().includes(search)
+                );
+            }
+            updateShoeCounter(filtered.length);
+            if (brandFilter) {
+                renderBrandSection(filtered, list);
+            } else {
+                // Group by brand
+                const grouped = {};
+                filtered.forEach(shoe => {
+                    if (!grouped[shoe.brand]) grouped[shoe.brand] = [];
+                    grouped[shoe.brand].push(shoe);
+                });
+                Object.keys(grouped).sort().forEach(brand => {
+                    // Brand title with colored logo
+                    const brandTitle = document.createElement('h2');
+                    brandTitle.style.display = 'flex';
+                    brandTitle.style.alignItems = 'center';
+                    brandTitle.style.gap = '12px';
+                    brandTitle.style.margin = '24px 0 8px 0';
+                    
+                    // Colored logo for each brand
+                    const logoDiv = document.createElement('div');
+                    logoDiv.className = 'brand-logo';
+                    logoDiv.style.display = 'flex';
+                    logoDiv.style.alignItems = 'center';
+                    logoDiv.style.justifyContent = 'center';
+                    logoDiv.style.fontWeight = 'bold';
+                    logoDiv.style.color = 'white';
+                    logoDiv.style.fontSize = '12px';
+                    
+                    // Assign colors for brands
+                    if (brand === 'SkyStep') {
+                        logoDiv.style.background = '#4CAF50';
+                        logoDiv.textContent = 'SS';
+                    } else if (brand === 'UrbanMax') {
+                        logoDiv.style.background = '#FF9800';
+                        logoDiv.textContent = 'UM';
+                    } else if (brand === 'FlexFit') {
+                        logoDiv.style.background = '#2196F3';
+                        logoDiv.textContent = 'FF';
+                    } else if (brand === 'TrailRun') {
+                        logoDiv.style.background = '#795548';
+                        logoDiv.textContent = 'TR';
+                    } else if (brand === 'StreetStyle') {
+                        logoDiv.style.background = '#9C27B0';
+                        logoDiv.textContent = 'SS';
+                    } else if (brand === 'ClassicWear') {
+                        logoDiv.style.background = '#607D8B';
+                        logoDiv.textContent = 'CW';
+                    } else if (brand === 'SportMax') {
+                        logoDiv.style.background = '#F44336';
+                        logoDiv.textContent = 'SM';
+                    }
+                    
+                    brandTitle.appendChild(logoDiv);
+                    
+                    const span = document.createElement('span');
+                    span.textContent = brand;
+                    span.style.fontWeight = brand === 'UrbanMax' ? 'normal' : 'bold';
+                    brandTitle.appendChild(span);
+                    list.appendChild(brandTitle);
+                    renderBrandSection(grouped[brand], list);
+                });
+            }
+        }
+
+        function renderBrandSection(shoesArr, list) {
+            // Display 4 per row
+            let row;
+            shoesArr.forEach((shoe, idx) => {
+                if (idx % 4 === 0) {
+                    row = document.createElement('div');
+                    row.style.display = 'flex';
+                    row.style.gap = '12px';
+                    row.style.marginBottom = '12px';
+                    list.appendChild(row);
+                }
+                const li = document.createElement('div');
+                li.className = 'shoe-item';
+                li.style.flex = '1 1 0';
+                li.style.minWidth = '0';
+                li.style.maxWidth = '25%';
+                li.style.boxSizing = 'border-box';
+                li.style.display = 'flex';
+                li.style.flexDirection = 'column';
+                li.style.alignItems = 'center';
+                li.style.justifyContent = 'space-between';
+                const img = document.createElement('img');
+                img.className = 'shoe-img';
+                img.src = shoe.image;
+                img.alt = shoe.name;
+                img.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'https://via.placeholder.com/120x120/CCCCCC/FFFFFF?text=No+Image';
+                };
+                li.appendChild(img);
+                const info = document.createElement('div');
+                info.className = 'shoe-info';
+                info.style.textAlign = 'center';
+                
+                // For UrbanMax: show brand + number on same line, then rest on new line
+                let shoeTitle = shoe.brand;
+                let shoeRest = shoe.name;
+                if (shoe.brand === 'UrbanMax') {
+                    const match = shoe.name.match(/^(\d+)/);
+                    if (match) {
+                        shoeTitle = shoe.brand + ' ' + match[1];
+                        shoeRest = shoe.name.slice(match[1].length).trim();
+                    }
+                }
+                const titleDiv = document.createElement('div');
+                titleDiv.textContent = shoeTitle;
+                titleDiv.style.fontWeight = 'bold';
+                info.appendChild(titleDiv);
+                const restDiv = document.createElement('div');
+                restDiv.textContent = shoeRest;
+                restDiv.style.fontSize = '0.95em';
+                restDiv.style.color = '#444';
+                info.appendChild(restDiv);
+                li.appendChild(info);
+                row.appendChild(li);
+            });
+        }
+
+        // Initialize filters and list
+        renderBrandFilter();
+        renderShoes();
+    </script>
+</body>
+</html>
