@@ -166,4 +166,4 @@ MIT License - feel free to use and modify as needed.
 
 **IMAGE SNEAKER INVENTORY**: If you want photo in the pro pic and not the shoes with the color use this following code
 
- <img src="img/" alt="Logo" style="display:block;margin:0 auto 16px auto;width:120px;height:120px;object-fit:contain;border-radius:50%;box-shadow:0 2px 8px #0002;">
+*/  <img src="img/" alt="Logo" style="display:block;margin:0 auto 16px auto;width:120px;height:120px;object-fit:contain;border-radius:50%;box-shadow:0 2px 8px #0002;"> /*
