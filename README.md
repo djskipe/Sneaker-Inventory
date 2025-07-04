@@ -186,12 +186,6 @@ Replace the placeholder above with this image tag:
 ✔️ Put your image inside the `img/` folder
 ✔️ Use a square image like `your-photo.jpg`
 
----
-
-## 🤝 Contributing
-
-Found a bug? Got a feature idea?
-Feel free to open an issue or submit a pull request!
 
 ---
 
