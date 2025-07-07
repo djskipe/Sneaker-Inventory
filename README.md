@@ -1,34 +1,39 @@
 
 
+```markdown
 # 👟 Shoe Inventory Manager
 
-A modern and lightweight web app to manage and showcase your personal sneaker collection.
+A modern and lightweight web app to manage and showcase your personal sneaker collection.  
 Perfect for collectors, resellers, or anyone who wants to keep their kicks organized.
+
+🎥 [Watch the video tutorial on YouTube](https://www.youtube.com/watch?v=Wgly7tYw2Ow&t=22s)
 
 ---
 
 ## ✨ Features
 
-* 🖥️ **Responsive design** – works on desktop, tablet, and mobile
-* 🔍 **Live search** – filter by brand or model name in real time
-* 🧠 **Smart brand grouping** – shoes grouped by brand with logo or color
-* 🧮 **Live counter** – see how many shoes are currently displayed
-* 🧩 **Size & lace length legend** – handy info for quick access
-* 🎨 **Grid layout** – clean, image-first display
-* ⚡ **Vanilla JavaScript only** – no frameworks or dependencies
+* 🖥️ **Responsive design** – works on desktop, tablet, and mobile  
+* 🔍 **Live search** – filter by brand or model name in real time  
+* 🧠 **Smart brand grouping** – shoes grouped by brand with logo or color  
+* 🧮 **Live counter** – see how many shoes are currently displayed  
+* 🧩 **Size & lace length legend** – handy info for quick access  
+* 🎨 **Grid layout** – clean, image-first display  
+* ⚡ **Vanilla JavaScript only** – no frameworks or dependencies  
 
 ---
 
 ## 📁 Project Structure
 
 ```
+
 shoe-inventory/
 ├── index.html          # Main app file
 └── img/                # Folder for all shoe images
-    ├── shoe1.jpg
-    ├── shoe2.jpg
-    └── ...
-```
+├── shoe1.jpg
+├── shoe2.jpg
+└── ...
+
+````
 
 ---
 
@@ -39,7 +44,7 @@ shoe-inventory/
    ```bash
    git clone https://github.com/yourusername/shoe-inventory.git
    cd shoe-inventory
-   ```
+````
 
 2. **Add your images**
 
@@ -84,6 +89,17 @@ shoe-inventory/
 
 6. **Run it**
    Just double-click `index.html` – no server required.
+
+---
+
+## 🎥 Video Tutorial
+
+Need help getting started?
+Check out the step-by-step video guide on YouTube:
+
+👉 [Watch the tutorial](https://www.youtube.com/watch?v=Wgly7tYw2Ow&t=22s)
+
+It covers everything from setup to customization!
 
 ---
 
@@ -186,7 +202,6 @@ Replace the placeholder above with this image tag:
 ✔️ Put your image inside the `img/` folder
 ✔️ Use a square image like `your-photo.jpg`
 
-
 ---
 
 ## 📄 License
@@ -196,6 +211,8 @@ MIT License – Free to use, modify and distribute.
 ---
 
 **Disclaimer**: The shoe brands and models shown in the demo are fictional and for illustrative purposes only.
+
+```
 
 ---
 
