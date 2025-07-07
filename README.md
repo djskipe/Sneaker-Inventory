@@ -212,8 +212,6 @@ MIT License – Free to use, modify and distribute.
 
 **Disclaimer**: The shoe brands and models shown in the demo are fictional and for illustrative purposes only.
 
-```
 
----
 
 
